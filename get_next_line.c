@@ -6,7 +6,7 @@
 /*   By: mwei <mwei@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:18:02 by mwei              #+#    #+#             */
-/*   Updated: 2025/08/26 17:08:16 by mwei             ###   ########.fr       */
+/*   Updated: 2025/09/03 12:03:51 by mwei             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ static char	*read_until_newline(int fd, char *unread_data)
 		}
 		buffer[bytes_read] = '\0';
 		temp = ft_strjoin(unread_data, buffer);
+		if (!temp)
+		{
+			free(unread_data);
+			return (NULL);
+		}
 		free(unread_data);
 		unread_data = temp;
 	}
@@ -62,7 +67,6 @@ static char	*update_unread_data(char *unread_data)
 	if (!unread_data[i])
 	{
 		free(unread_data);
-		unread_data = NULL;
 		return (NULL);
 	}
 	new_data = ft_substr(unread_data, i + 1, ft_strlen(unread_data) - i - 1);
