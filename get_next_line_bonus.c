@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mwei <mwei@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:18:02 by mwei              #+#    #+#             */
-/*   Updated: 2025/10/03 16:10:06 by mwei             ###   ########.fr       */
+/*   Updated: 2025/10/03 16:10:28 by mwei             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*free_all(char *buffer, char *unread_data)
 {
@@ -87,25 +87,25 @@ static char	*update_unread_data(char *unread_data)
 
 char	*get_next_line(int fd)
 {
-	static char	*unread_data;
+	static char	*unread_data[1024];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE >= INT_MAX)
 		return (NULL);
-	unread_data = read_until_newline(fd, unread_data);
-	if (!unread_data || *unread_data == '\0')
+	unread_data[fd] = read_until_newline(fd, unread_data[fd]);
+	if (!unread_data[fd] || *unread_data[fd] == '\0')
 	{
-		free(unread_data);
-		unread_data = NULL;
+		free(unread_data[fd]);
+		unread_data[fd] = NULL;
 		return (NULL);
 	}
-	line = extract_line(unread_data);
+	line = extract_line(unread_data[fd]);
 	if (line == NULL)
 	{
-		free(unread_data);
-		unread_data = NULL;
+		free(unread_data[fd]);
+		unread_data[fd] = NULL;
 	}
 	else
-		unread_data = update_unread_data(unread_data);
+		unread_data[fd] = update_unread_data(unread_data[fd]);
 	return (line);
 }
